@@ -1,0 +1,41 @@
+
+name: Playwright API Automation CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore Playwright_API_Automation.slnx
+
+      - name: Build solution
+        run: dotnet build Playwright_API_Automation.slnx --configuration Release --no-restore
+
+      - name: Run API tests
+        run: dotnet test Playwright_API_Automation.slnx --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: API-Test-Results
+          path: Playwright_API_Automation/TestResults/*.trx
+          if-no-files-found: warn
