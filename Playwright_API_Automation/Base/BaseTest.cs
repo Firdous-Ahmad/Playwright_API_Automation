@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Playwright;
 using Playwright_API_Automation.API;
+using Allure.NUnit;
 namespace Playwright_API_Automation.Base
 {
+    [AllureNUnit]
     public class BaseTest
     {
         protected IPlaywright Playwright { get; private set; }
